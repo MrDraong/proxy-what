@@ -36,7 +36,7 @@ export class TokenService {
   }
 
   async getToken(): Promise<string> {
-    let token: string = (await this.findOne('1')).tokenValue;
+    let token: string = (await this.findOne('1'))?.tokenValue;
     if (!token || this.isTokenExpired(token)) {
       token = this.createNewToken();
     }

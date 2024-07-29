@@ -6,7 +6,7 @@ export class GamesController {
   constructor(private gamesService: GamesService) {}
 
   @Get()
-  findAll(): string {
+  findAll(): Promise<string> {
     return this.gamesService.findAll();
   }
 }

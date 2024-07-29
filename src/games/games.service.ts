@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AxiosRequestConfig } from 'axios';
 import { firstValueFrom } from 'rxjs';
 import { TokenService } from 'src/token/token.service';
 
@@ -12,27 +13,25 @@ export class GamesService {
     private tokenService: TokenService,
   ) {}
 
-  findAll(): string {
-    let headersObject = {};
-    this.tokenService.getToken().then((res) => {
-      headersObject = {
-        Accept: 'application/json',
+  async findAll(): Promise<string> {
+    const activeToken = await this.tokenService.getToken();
+    const requestConfig: AxiosRequestConfig = { 
+      headers: {
+        'Accept': 'application/json',
         'Client-ID': `${this.configService.get<string>('CLIENT_ID')}`,
-        Authorization: `Bearer ${res}`,
-      };
-      console.log(headersObject);
-      firstValueFrom(
-        this.httpService.post(
-          `${this.configService.get<string>('API_BASE_URL')}/games`,
-          {},
-          { headers: headersObject, body: 'fields age_ratings, name' },
-        ),
-      ).then((response) => {
-        console.log(response.data);
-      });
-    });
+        'Authorization': `Bearer ${activeToken}`,
+        
+      },
+    };
 
-    /**/
-    return '';
+    const { data } = await firstValueFrom(
+      this.httpService.post(
+        `${this.configService.get<string>('API_BASE_URL')}/games`,
+        {},
+        requestConfig,
+      ),
+    );
+    console.log(data);
+    return data;
   }
 }
