@@ -20,14 +20,13 @@ export class GamesService {
         'Accept': 'application/json',
         'Client-ID': `${this.configService.get<string>('CLIENT_ID')}`,
         'Authorization': `Bearer ${activeToken}`,
-        
       },
     };
 
     const { data } = await firstValueFrom(
       this.httpService.post(
         `${this.configService.get<string>('API_BASE_URL')}/games`,
-        {},
+        "fields *;",
         requestConfig,
       ),
     );
