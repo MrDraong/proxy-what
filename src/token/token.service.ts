@@ -18,7 +18,7 @@ export class TokenService {
     this.tokenModel.create({ tokenValue: token });
   }
 
-  async findAll(): Promise<Token[]> {
+  findAll(): Promise<Token[]> {
     return this.tokenModel.findAll();
   }
 
@@ -35,9 +35,8 @@ export class TokenService {
     await token.destroy();
   }
 
-  getToken(): string {
-    let token: string = this.findAll()[0]?.tokenValue;
-
+  async getToken(): Promise<string> {
+    let token: string = (await this.findOne('1')).tokenValue;
     if (!token || this.isTokenExpired(token)) {
       token = this.createNewToken();
     }
